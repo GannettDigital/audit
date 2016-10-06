@@ -24,15 +24,20 @@ class Audit
       action :execute do
         converge_by "report compliance profiles' results" do
           reports, ownermap = compound_report(profiles)
-
           blob = node_info
           blob[:reports] = reports
-          total_failed = 0
-          blob[:reports].each do |k, _|
-            Chef::Log.info "Summary for #{k} #{blob[:reports][k]['summary'].to_json}" if quiet
-            total_failed += blob[:reports][k]['summary']['failure_count'].to_i
-          end
           blob[:profiles] = ownermap
+
+          total_failed = reports.map do |_name, profile|
+            if !profile['controls'].empty?
+              profile['controls'].map do |control|
+                control['status'] != 'passed' ? 1 : 0
+              end
+            else
+              0
+            end
+          end.flatten.reduce(:+)
+          Chef::Log.info "Total number of failed controls: #{total_failed}"
 
           # resolve owner
           o = return_or_guess_owner

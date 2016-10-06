@@ -23,14 +23,16 @@ default['audit']['collector'] = 'chef-server'
 # Attributes server, insecure and token/refresh_token are only needed for the 'chef-compliance' collector
 # server format example: 'https://comp-server.example.com/api'
 default['audit']['server'] = nil
-# choose between refresh_token or token(access_token). Needed only for the 'chef-compliance' collector
+# choose between the permanent refresh_token or ephemeral token(access_token). Needed only for the 'chef-compliance' collector
 default['audit']['refresh_token'] = nil
+# the token(access_token) expires in 12h after creation
 default['audit']['token'] = nil
 # set this insecure attribute to true if the compliance server uses self-signed ssl certificates
 default['audit']['insecure'] = nil
 
 # owner needed for the 'chef-compliance' and 'chef-server' collectors
 default['audit']['owner'] = nil
+
 default['audit']['quiet'] = nil
 default['audit']['profiles'] = {}
 
@@ -44,8 +46,8 @@ default['audit']['fail_if_not_present'] = false
 # fail converge after posting report if any audits have failed
 default['audit']['fail_if_any_audits_failed'] = false
 
-# inspec gem version to install(e.g. '0.22.1') or 'latest'
-default['audit']['inspec_version'] = '0.27.1'
+# inspec gem version to install(e.g. '1.1.0')
+default['audit']['inspec_version'] = '1.1.0'
 
 # by default run audit every time
 default['audit']['interval']['enabled'] = false
@@ -54,3 +56,6 @@ default['audit']['interval']['time'] = 1440
 
 # quiet mode, on by default because this is testing, resources aren't converged in the normal chef sense
 default['audit']['quiet'] = true
+
+# overwrite existing profile in upload mode
+default['audit']['overwrite'] = true
